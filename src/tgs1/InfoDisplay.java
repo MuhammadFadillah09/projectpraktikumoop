@@ -8,6 +8,6 @@ package tgs1;
  *
  * @author ASUS
  */
-public interface FormatDosis {
-    String formatDosis(String Dosis);
+public interface InfoDisplay {
+    abstract void displayInfo();
 }

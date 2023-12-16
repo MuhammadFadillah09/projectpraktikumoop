@@ -3,27 +3,103 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package tgs1;
-import javax.swing.*;
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 /**
  *
  * @author ASUS
  */
-public class GUI_Dokter extends javax.swing.JFrame {
+public class GUI_obt extends javax.swing.JFrame {
     private Obat bat;
     private informasi info;
     private DefaultTableModel tableModel;
     /**
      * Creates new form GUI_Dokter
      */
-    public GUI_Dokter() {
+    public GUI_obt() {
         initComponents();
           tableModel = new DefaultTableModel(new Object[]{"Nama Obat", "Jumlah","Dosis"}, 0);
         jTable1.setModel(tableModel);
     }
+    
+    public Connection conn;
+    
+    public void koneksi() throws SQLException {
+        try {
+            conn = null;
+            Class.forName("com.mysql.jdbc.Driver");
+            conn =DriverManager.getConnection("jdbc:mysql://localhost/oop_informasirs?user=root&amp;password=");
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(GUI_obt.class.getName()).log(Level.SEVERE,null, ex);
+        } catch (SQLException e) {
+            Logger.getLogger(GUI_obt.class.getName()).log(Level.SEVERE,null, e);
+        } catch (Exception es) {
+            Logger.getLogger(GUI_obt.class.getName()).log(Level.SEVERE,null, es);
+        }
+    }
+    public void tampil() {
+        DefaultTableModel tabelhead = new DefaultTableModel();
+        tabelhead.addColumn("Kode Obat");
+        tabelhead.addColumn("Nama Obat");
+        tabelhead.addColumn("Jumlah");
+        tabelhead.addColumn("Dosis");
+        try {
+            koneksi();
+            String sql = "SELECT * FROM tb_obt";
+            Statement stat = conn.createStatement();
+            ResultSet res = stat.executeQuery(sql);
+            while (res.next()) {
+            tabelhead.addRow(new Object[]{res.getString(2),res.getString(3), res.getString(4), res.getString(5),});
+            }
+            JTable1.setModel(tabelhead);
+        } catch (Exception e) {
+        JOptionPane.showMessageDialog(null, &quot;BELUMTERKONEKSI&quot;);
+        }
+}
+    
+    public void refresh() {
+new GUI_obt().setVisible(true);
+this.setVisible(false);
+}
+    
+    public void insert() {
+String Nim = txtNim.getText();
+String Nama = txtNama.getText();
+String jk;
+if (radiobtnLaki.isSelected()) {
+
+jk = &quot;L&quot;;
+} else {
+jk = &quot;P&quot;;
+}
+String Prodi = txtProdi.getText();
+String Ang = txtAngkatan.getText();
+String alamat = txtAlamat.getText();
+try {
+koneksi();
+Statement statement = conn.createStatement();
+statement.executeUpdate(&quot;INSERT INTO tb_mahasiswa (nim,
+nama,jk, prodi, th_angkatan,alamat)&quot;
++ &quot;VALUES(&#39;&quot; + Nim + &quot;&#39;,&#39;&quot; + Nama + &quot;&#39;,&#39;&quot; + jk
++ &quot;&#39;,&#39;&quot; + Prodi + &quot;&#39;,&#39;&quot; + Ang + &quot;&#39;,&#39;&quot; + alamat + &quot;&#39;)&quot;);
+statement.close();
+JOptionPane.showMessageDialog(null, &quot;Berhasil Memasukan
+Data Mahasiswa!&quot; + &quot;\n&quot; + alamat);
+} catch (Exception e) {
+JOptionPane.showMessageDialog(null, &quot;Terjadi Kesalahan
+Input!&quot;);
+}
+refresh();
+}
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -43,7 +119,6 @@ public class GUI_Dokter extends javax.swing.JFrame {
         jScrollPane2 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
         Hapus = new javax.swing.JButton();
-        Clear = new javax.swing.JButton();
         Close = new javax.swing.JButton();
         jLabel4 = new javax.swing.JLabel();
         txtdosis = new javax.swing.JTextField();
@@ -83,13 +158,6 @@ public class GUI_Dokter extends javax.swing.JFrame {
             }
         });
 
-        Clear.setText("Clear");
-        Clear.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                ClearActionPerformed(evt);
-            }
-        });
-
         Close.setText("Close");
         Close.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -126,8 +194,6 @@ public class GUI_Dokter extends javax.swing.JFrame {
                         .addGap(18, 18, 18)
                         .addComponent(Hapus)
                         .addGap(18, 18, 18)
-                        .addComponent(Clear)
-                        .addGap(18, 18, 18)
                         .addComponent(Close))
                     .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 617, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(766, 766, 766))
@@ -158,7 +224,6 @@ public class GUI_Dokter extends javax.swing.JFrame {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(Simpan)
                             .addComponent(Hapus)
-                            .addComponent(Clear)
                             .addComponent(Close))))
                 .addContainerGap(177, Short.MAX_VALUE))
         );
@@ -167,44 +232,45 @@ public class GUI_Dokter extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void SimpanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SimpanActionPerformed
-                                     
-    // Menghilangkan input dari GUI dan menggantinya dengan nilai tetap
-    String namaObat = txtnamaobat.getText();
-    String jumlah = txtjumlah.getText();
-    String dosis = txtdosis.getText();
-
-    // Membuat objek Obat
-    Obat obat = new Obat(namaObat, jumlah, dosis);
-
-    // Menambahkan data ke tabel
-    Object[] rowData = {obat.getNamaObat(), obat.getJumlah(), obat.getDosis()};
-    tableModel.addRow(rowData);
-
+                                 
+    try {
+        String namaObat = txtnamaobat.getText();
+        String jumlah = txtjumlah.getText();
+        String dosis = txtdosis.getText();
+        // Validasi input (Anda dapat menambahkan validasi lain sesuai kebutuhan)
+        if (namaObat.isEmpty() || jumlah.isEmpty() || dosis.isEmpty()) {
+            throw new IllegalArgumentException("Semua kolom harus diisi");
+        }
+        // Membuat objek Obat
+        Obat obat = new Obat(namaObat, jumlah, dosis);
+        // Menambahkan data ke tabel
+        Object[] rowData = { obat.getNamaObat(), obat.getJumlah(), obat.getDosis() };
+        tableModel.addRow(rowData);
+        // Membersihkan input setelah disimpan (opsional)
+        txtnamaobat.setText("");
+        txtjumlah.setText("");
+        txtdosis.setText("");
+    } catch (Exception e) {
+        // Menangani pengecualian, Anda dapat mencatat pesan kesalahan atau menampilkan pesan kesalahan
+        JOptionPane.showMessageDialog(this, "Error menyimpan data: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+    }
     }//GEN-LAST:event_SimpanActionPerformed
 
     private void HapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_HapusActionPerformed
         // TODO add your handling code here:
-         DefaultTableModel dataModel = (DefaultTableModel) 
-        jTable1.getModel();
-        int rowCount = dataModel.getRowCount();
-        while (rowCount > 0){
-        dataModel.removeRow(rowCount - 1);
-        rowCount = dataModel.getRowCount();
-        }
+        DefaultTableModel dataModel = (DefaultTableModel) jTable1.getModel();
+    int rowCount = dataModel.getRowCount();
+    
+    // Menghapus semua baris dari model tabel
+    for (int i = rowCount - 1; i >= 0; i--) {
+        dataModel.removeRow(i);
+    }
     }//GEN-LAST:event_HapusActionPerformed
 
     private void CloseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CloseActionPerformed
         // TODO add your handling code here:
         System.exit(0);
     }//GEN-LAST:event_CloseActionPerformed
-
-    private void ClearActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ClearActionPerformed
-        // TODO add your handling code here:
-        txtnamaobat.setText("");
-        txtjumlah.setText("");
-        txtdosis.setText("");
-        jTable1.clearSelection();
-    }//GEN-LAST:event_ClearActionPerformed
 
     /**
      * @param args the command line arguments
@@ -223,26 +289,26 @@ public class GUI_Dokter extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(GUI_Dokter.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(GUI_obt.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(GUI_Dokter.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(GUI_obt.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(GUI_Dokter.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(GUI_obt.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(GUI_Dokter.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(GUI_obt.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new GUI_Dokter().setVisible(true);
+                new GUI_obt().setVisible(true);
             }
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton Clear;
     private javax.swing.JButton Close;
     private javax.swing.JButton Hapus;
     private javax.swing.JButton Simpan;

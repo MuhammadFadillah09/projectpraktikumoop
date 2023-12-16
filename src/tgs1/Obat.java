@@ -2,7 +2,7 @@ package tgs1;
 
 import javax.swing.table.DefaultTableModel;
 
-public class Obat extends informasi {
+public class Obat extends informasi implements InfoDisplay {
     private String NamaObat;
     private String Jumlah;
     private String Dosis;
@@ -19,6 +19,7 @@ public class Obat extends informasi {
     }
 
     // Getter and Setter methods
+    
     public void setNamaObat(String namaObat) {
         this.NamaObat = namaObat;
     }
@@ -48,9 +49,8 @@ public class Obat extends informasi {
     }
 
     // Display information method
-    @Override
+   @Override
     public void displayInfo() {
-        super.displayInfo();
         System.out.println("Nama Obat: " + NamaObat);
         System.out.println("Jumlah: " + Jumlah);
         System.out.println("Dosis: " + Dosis);
@@ -63,12 +63,11 @@ public class Obat extends informasi {
     }
 
     // Generate information method
-    @Override
     public String generateInfo() {
-        return super.generateInfo() +
-                "Nama Obat: " + NamaObat + "\n" +
-                "Jumlah: " + Jumlah + "\n" +
-                "Dosis: " + Dosis + "\n";
-    }
+    return "Nama Obat: " + NamaObat + "\n" +
+           "Jumlah: " + Jumlah + "\n" +
+           "Dosis: " + Dosis + "\n";
+}
+
 
 }

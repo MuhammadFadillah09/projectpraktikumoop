@@ -51,8 +51,6 @@
                       <EmptySpace type="separate" max="-2" attributes="0"/>
                       <Component id="Hapus" min="-2" max="-2" attributes="0"/>
                       <EmptySpace type="separate" max="-2" attributes="0"/>
-                      <Component id="Clear" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace type="separate" max="-2" attributes="0"/>
                       <Component id="Close" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <Component id="jScrollPane2" min="-2" pref="617" max="-2" attributes="0"/>
@@ -91,7 +89,6 @@
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="Simpan" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="Hapus" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="Clear" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="Close" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                   </Group>
@@ -177,14 +174,6 @@
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="HapusActionPerformed"/>
-      </Events>
-    </Component>
-    <Component class="javax.swing.JButton" name="Clear">
-      <Properties>
-        <Property name="text" type="java.lang.String" value="Clear"/>
-      </Properties>
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="ClearActionPerformed"/>
       </Events>
     </Component>
     <Component class="javax.swing.JButton" name="Close">
